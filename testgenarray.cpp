@@ -1,25 +1,25 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <cstdlib>
-#include <ctime>
-#include <iomanip>
-#include <filesystem> // Thêm thư viện này
+#include<bits/stdc++.h>
+//#define int long long
+#define speed ios_base::sync_with_stdio(0); cin.tie(0);
+
+#define fi first
+#define se second
+#define taskname ""
+using namespace std;
+const int maxn=1e5+10;
+const int mod=1e9+7;
 
 namespace fs = std::filesystem;
 
 void generate_test_case(const std::string& input_filename, const std::string& output_filename, int N) {
-    std::ofstream input_file(input_filename);
-    std::ofstream output_file(output_filename);
-
-    // Sinh ngẫu nhiên mảng N số
-    std::vector<int> array(N);
+    ofstream input_file(input_filename);
+    ofstream output_file(output_filename);
+    vector<int> array(N);
     long long sum = 0;
     for (int i = 0; i < N; ++i) {
-        array[i] = rand() % 10000001; // Các số trong mảng <= 10^7
+        array[i] = rand() % 10000001; 
         sum += array[i];
     }
-
     // Ghi vào file input
     input_file << N << "\n";
     for (int num : array) {
@@ -38,16 +38,15 @@ int main() {
     srand(time(0));
     int num_tests;
     int max_N;
-    std::string folder_name;
+    string folder_name;
 
-    std::cout << "Nhap so luong test cases: ";
-    std::cin >> num_tests;
-    std::cout << "Nhap gia tri N toi da: ";
-    std::cin >> max_N;
-    std::cout << "Nhap ten thu muc lon: ";
-    std::cin >> folder_name;
+    cout << "Number of test cases:";
+    cin >> num_tests;
+    cout << "Max value of N:";
+    cin >> max_N;
+    cout << "Enter file name:";
+    cin >> folder_name;
 
-    // Tạo thư mục lớn
     fs::create_directory(folder_name);
 
     for (int i = 1; i <= num_tests; ++i) {
