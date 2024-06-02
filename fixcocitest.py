@@ -16,8 +16,8 @@ def getTestDir(problemsDir, countingTest):
         testDir += str(countingTest)
     return testDir
 
-rootFolderSrc = "C:\\Users\\Ngat Do\\Downloads\\contest1_testdata\\"
-rootFolderDest = "C:\\Users\\Ngat Do\\Downloads\\contest1_testdata_fixed\\"
+rootFolderSrc = "C:\\ đường dẫn file"
+rootFolderDest = "C:\\ đường dẫn file" #dòng này sẽ là path của file để lưu test fixed.
 #Tao thu muc chua test sau khi sua
 if not os.path.isdir(rootFolderDest) : os.mkdir(rootFolderDest)
 
