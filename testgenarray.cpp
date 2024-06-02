@@ -45,7 +45,7 @@ int main() {
     cout << "Max value of N:";
     cin >> max_N;
     cout << "Enter file name:";
-    getline(cin, folder_name);
+    cin>>folder_name;
 
     fs::create_directory(folder_name);
 
