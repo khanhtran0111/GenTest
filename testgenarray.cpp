@@ -27,7 +27,7 @@ void generate_test_case(const std::string& input_filename, const std::string& ou
     }
     input_file << "\n";
 
-    // Ghi vào file output (ví dụ: tổng của mảng)
+    // Ghi vào file output 
     output_file << sum << "\n";
 
     input_file.close();
