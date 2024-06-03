@@ -16,10 +16,7 @@ void generate_test_case(const std::string& input_filename, const std::string& ou
     ofstream output_file(output_filename);
     
     int M = (rand() % N + N)%N;
-    // Ghi vào file input
     input_file << M << "\n";
-
-    // Ghi vào file output 
     output_file << M << "\n";
 
     input_file.close();
