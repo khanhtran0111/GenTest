@@ -16,6 +16,8 @@ void generate_test_case(const std::string& input_filename, const std::string& ou
     ofstream output_file(output_filename);
     
     int M = (rand() % N + N)%N;
+    //double M = (static_cast<double>(rand()) / RAND_MAX) * (3 * N + 1) - N; cả số âm và dương 
+    //double M = (static_cast<double>(rand()) / RAND_MAX) * N; chỉ số dương
     input_file << M << "\n";
     output_file << M << "\n";
 
