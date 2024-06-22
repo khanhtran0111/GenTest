@@ -33,6 +33,7 @@ Sau đây, để giúp các bạn dễ hình dung, mình sẽ làm mẫu việc 
 
 
 **Bước 1: chạy file testgenarray để sinh ra bộ test gồm số N và một mảng gồm N số.**
+
 ![Tutorial picture](.tutorial/g1.png)
 
 Mình sẽ sinh ra một bộ test tên là `Gen`, số lượng testcases là `15`, giá trị lớn nhất của N là `1000`.
@@ -93,6 +94,7 @@ To help you visualize, I will provide an example of generating tests for the fol
 - Calculate the sum of the numbers in the array N.
 
 **Step 1: Run the testgenarray file to generate a test set with the number N and an array of N numbers.**
+
 ![Tutorial picture](.tutorial/g1.png)
 
 I will generate a test set named `Gen`, with 15 test cases, and the maximum value of N is 1000.
