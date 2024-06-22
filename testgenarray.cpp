@@ -15,10 +15,9 @@ void generate_test_case(const std::string& input_filename, const std::string& ou
     ofstream input_file(input_filename);
     ofstream output_file(output_filename);
     vector<int> array(N);
-    long long sum = 0;
+    //long long sum = 0;
     for (int i = 0; i < N; ++i) {
         array[i] = rand() % 10000001; 
-        sum += array[i];
     }
     // Ghi vào file input
     input_file << N << "\n";
@@ -27,8 +26,6 @@ void generate_test_case(const std::string& input_filename, const std::string& ou
     }
     input_file << "\n";
 
-    // Ghi vào file output 
-    output_file << sum << "\n";
 
     input_file.close();
     output_file.close();
