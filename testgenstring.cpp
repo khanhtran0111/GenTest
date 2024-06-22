@@ -28,7 +28,7 @@ void generate_test_case(const std::string& input_filename, const std::string& ou
 
     string ss = generate_random_string(N);
     input_file << ss;
-    output_file<< ss;
+    //output_file<< ss;
     input_file.close();
     output_file.close();
 }
@@ -48,15 +48,19 @@ int main() {
 
     fs::create_directory(folder_name);
 
-    for (int i = 1; i <= num_tests; ++i) {
+    for (int i = 1; i <= num_tests; i++) {
         int N = rand() % max_N + 1;
         std::ostringstream input_filename, output_filename, subfolder;
 
         subfolder << folder_name << "/test" << std::setw(3) << std::setfill('0') << i;
         fs::create_directory(subfolder.str());
 
-        input_filename << subfolder.str() << "/test" << std::setw(3) << std::setfill('0') << i << ".inp";
-        output_filename << subfolder.str() << "/test" << std::setw(3) << std::setfill('0') << i << ".out";
+        // input_filename << subfolder.str() << "/test" << std::setw(3) << std::setfill('0') << i << ".inp";
+        // output_filename << subfolder.str() << "/test" << std::setw(3) << std::setfill('0') << i << ".out";
+
+        input_filename << subfolder.str() << "/" << folder_name << ".inp";
+        output_filename << subfolder.str() << "/" << folder_name << ".out";
+
 
         generate_test_case(input_filename.str(), output_filename.str(), N);
     }
