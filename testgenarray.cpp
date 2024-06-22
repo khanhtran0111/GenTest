@@ -43,7 +43,7 @@ int main() {
     cin >> max_N;
     cout << "Enter file name:";
     cin>>folder_name;
-
+    
     fs::create_directory(folder_name);
 
     for (int i = 1; i <= num_tests; i++) {
