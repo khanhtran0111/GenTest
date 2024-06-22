@@ -16,10 +16,10 @@ void generate_test_case(const std::string& input_filename, const std::string& ou
     ofstream output_file(output_filename);
     
     int M = (rand() % N + N)%N;
-    //double M = (static_cast<double>(rand()) / RAND_MAX) * (3 * N + 1) - N; cả số âm và dương 
-    //double M = (static_cast<double>(rand()) / RAND_MAX) * N; chỉ số dương
+    //double M = (static_cast<double>(rand()) / RAND_MAX) * (3 * N + 1) - N; both negative and positive numbers
+    //double M = (static_cast<double>(rand()) / RAND_MAX) * N; only positive numbers
     input_file << M << "\n";
-    output_file << M << "\n";
+    //output_file << M << "\n";
 
     input_file.close();
     output_file.close();
@@ -41,14 +41,18 @@ signed main()
 
     fs::create_directory(folder_name);
 
-    for (int i = 1; i <= num_tests; ++i) {
+    for (int i = 1; i <= num_tests; i++) {
         std::ostringstream input_filename, output_filename, subfolder;
 
         subfolder << folder_name << "/test" << std::setw(3) << std::setfill('0') << i;
         fs::create_directory(subfolder.str());
 
-        input_filename << subfolder.str() << "/test" << std::setw(3) << std::setfill('0') << i << ".inp";
-        output_filename << subfolder.str() << "/test" << std::setw(3) << std::setfill('0') << i << ".out";
+        // input_filename << subfolder.str() << "/test" << std::setw(3) << std::setfill('0') << i << ".inp";
+        // output_filename << subfolder.str() << "/test" << std::setw(3) << std::setfill('0') << i << ".out";
+
+        input_filename << subfolder.str() << "/" << folder_name << ".inp";
+        output_filename << subfolder.str() << "/" << folder_name << ".out";
+
 
         generate_test_case(input_filename.str(), output_filename.str(), max_N);
     }
