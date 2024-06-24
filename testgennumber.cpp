@@ -18,6 +18,8 @@ void generate_test_case(const std::string& input_filename, const std::string& ou
     int M = (rand() % N + N)%N;
     //double M = (static_cast<double>(rand()) / RAND_MAX) * (3 * N + 1) - N; both negative and positive numbers
     //double M = (static_cast<double>(rand()) / RAND_MAX) * N; only positive numbers
+    //int Even = 2 * (rand() % (N / 2));
+    //int Odd = 2 * (rand() % (N / 2)) + 1;
     input_file << M << "\n";
     //output_file << M << "\n";
 
