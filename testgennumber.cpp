@@ -16,12 +16,12 @@ void generate_test_case(const std::string& input_filename, const std::string& ou
     ofstream output_file(output_filename);
     // M is the limit for your testcase. You can easily set it up
     int N = (rand() % M + M)%M; //just example, you have to create your know number that suit with your problem.
-    //double M = (static_cast<double>(rand()) / RAND_MAX) * (3 * N + 1) - N; both negative and positive numbers
-    //double M = (static_cast<double>(rand()) / RAND_MAX) * N; only positive numbers
-    //int Even = 2 * (rand() % (N / 2));
-    //int Odd = 2 * (rand() % (N / 2)) + 1;
+    //double N = (static_cast<double>(rand()) / RAND_MAX) * (3 * M + 1) - M; both negative and positive numbers
+    //double N = (static_cast<double>(rand()) / RAND_MAX) * M; only positive numbers
+    //int Even = 2 * (rand() % (M / 2));
+    //int Odd = 2 * (rand() % (M / 2)) + 1;
     input_file << N << "\n";
-    //output_file << M << "\n";
+    //output_file << N << "\n";
 
     input_file.close();
     output_file.close();
