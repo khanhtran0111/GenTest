@@ -1,4 +1,12 @@
-#include<bits/stdc++.h>
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+#include <string>
+#include <iomanip>
+#include <cstdlib>
+#include <ctime>
+#include <algorithm>
+#include<vector>
 //#define int long long
 #define speed ios_base::sync_with_stdio(0); cin.tie(0);
 
