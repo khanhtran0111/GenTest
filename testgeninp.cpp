@@ -19,6 +19,11 @@ const int mod=1e9+7;
 
 namespace fs = std::filesystem;
 
+int randomInRange(int a, int b){
+    return a + rand() % (b-a+1);
+}
+
+
 void generate_test_case(const std::string& input_filename, const std::string& output_filename, int M) {
     ofstream input_file(input_filename);
     ofstream output_file(output_filename);

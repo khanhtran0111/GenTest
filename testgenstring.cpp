@@ -19,6 +19,10 @@ const int mod=1e9+7;
 
 namespace fs = std::filesystem;
 
+int randomInRange(int a, int b){
+    return a + rand() % (b-a+1);
+}
+
 string generate_random_string(size_t n){
     auto randchar =[]() -> char {
         const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
