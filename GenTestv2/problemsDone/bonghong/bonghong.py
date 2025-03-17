@@ -1,5 +1,0 @@
-N = int(input())
-K = int(input())
-D = int(input())
-print(K * N)
-print(N // D)
