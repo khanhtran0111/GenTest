@@ -1,0 +1,61 @@
+# Hướng Dẫn Sử Dụng Script Sinh Test
+
+## Bước 1: Tạo Folder Chứa Bài Tập
+Tạo một folder mới bên trong thư mục `problems`, đặt tên theo mã bài tập. Ví dụ:
+```
+problems/
+    bai1/
+    bai2/
+    ...
+```
+
+## Bước 2: Thêm File Code Bài Tập
+Thêm file code **C++ hoặc Python** vào folder vừa tạo.
+- **Tên file phải trùng với tên folder**.
+- Nếu viết bằng **C++**, đặt tên file là `<problemName>.cpp`.
+- Nếu viết bằng **Python**, đặt tên file là `<problemName>.py`.
+
+Ví dụ với bài `bonghong`:
+```
+problems/
+    bonghong/
+        bonghong.cpp  (hoặc bonghong.py)
+```
+
+## Bước 3: Cấu Hình File `config.py`
+- **Copy file** `config_sample.py` vào thư mục bài tập.
+- **Đổi tên file** thành `config.py`.
+- **Chỉnh sửa các tham số** bên trong `config.py` như sau:
+
+```python
+# Tên bài toán (trùng với tên folder và file code)
+problemName = "bonghong"
+
+# Số lượng test case cần sinh
+totalOfTests = 20
+
+# Phân chia điểm theo subtask
+subtasks = [50, 50]  # Subtask 1: 50%, Subtask 2: 50%.
+
+# Giới hạn đầu vào của bài toán
+minN = 1
+maxN = [1000, 1000000]  # Subtask 1: tối đa 1000, Subtask 2: tối đa 1.000.000
+```
+
+**Giải thích:**
+- `problemName`: Tên bài toán, phải khớp với tên folder và file code.
+- `totalOfTests`: Số lượng test case cần tạo.
+- `subtasks`: Chia điểm theo các subtask. Ví dụ `[50, 50]` nghĩa là mỗi subtask chiếm 50% tổng điểm.
+- `minN`: Giá trị nhỏ nhất của đầu vào.
+- `maxN`: Giá trị lớn nhất của đầu vào, có thể là một số hoặc một danh sách tương ứng với các subtask.
+
+- Hàm `genInputContent(testID, curSubtask)` chịu trách nhiệm sinh dữ liệu đầu vào cho từng test case. Chỉnh sửa hàm sao cho phù hợp với dữ liệu từng đề bài. File `genUltils.py` chứa các hàm hỗ trợ sinh dữ liệu ngẫu nhiên và xử lý định dạng. Để hiểu rõ hơn, hãy mở genUltils.py để xem các hàm tiện ích.
+
+## Bước 4: Chạy Script Sinh Test
+Chạy file `genTest.py` để tạo bộ test tự động:
+```sh
+python genTest.py
+```
+
+Sau khi chạy xong, test cases sẽ được tạo trong thư mục bài tập. Bạn có thể kiểm tra output trong các file `*.out` tương ứng.
+

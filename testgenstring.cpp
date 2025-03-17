@@ -25,7 +25,7 @@ int randomInRange(int a, int b){
 
 string generate_random_string(size_t n){
     auto randchar =[]() -> char {
-        const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //ì you have more characters you can add or custom it
         const size_t max_index = (sizeof(charset) - 1);
         return charset[rand() % max_index];
     };
