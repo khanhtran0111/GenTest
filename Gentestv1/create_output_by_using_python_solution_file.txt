@@ -1,7 +1,0 @@
-setlocal enabledelayedexpansion
-set code=%~n0
-set count=0
-set testfol=test
-for /D %%i in (*) do (
-python %code%.py < %%~nxi\%code%.INP > %%~nxi\%code%.OUT
-)
