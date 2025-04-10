@@ -51,3 +51,8 @@ python genTest.py
 ```
 
 Sau khi chạy xong, test cases sẽ được tạo trong thư mục bài tập. Bạn có thể kiểm tra output trong các file `*.out` tương ứng.
+
+---
+Nếu muốn đơn giản hoá các bước, ít thao tác, có thể chạy file `app.py` để có thể một app trực quan nhất về sinh test cũng như thao tác đơn giản hơn. (Vẫn đang trong quá trình hoàn thiện, đây là phiên bản demo nên mong quý bạn đọc có thể sử dụng thử)
+
+Nếu có vấn đề, góp ý, xin hãy gửi qua mail: giakhanhcnh@gmail.com
