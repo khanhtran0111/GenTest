@@ -92,6 +92,12 @@ def generate():
         self.file_tree.clicked.connect(self.file_clicked)
         
         sidebar_layout.addWidget(QLabel("Project Files:"))
+        
+        # Add refresh button for the file tree
+        refresh_btn = QPushButton("Refresh Files")
+        refresh_btn.clicked.connect(self.update_file_tree)
+        sidebar_layout.addWidget(refresh_btn)
+        
         sidebar_layout.addWidget(self.file_tree)
         action_section = QWidget()
         action_layout = QVBoxLayout(action_section)
@@ -113,8 +119,6 @@ def generate():
     def create_editor_area(self):
         editor_widget = QWidget()
         editor_layout = QVBoxLayout(editor_widget)
-        
-        # Tabs for open files
         self.tab_widget = QTabWidget()
         self.tab_widget.setTabsClosable(True)
         self.tab_widget.tabCloseRequested.connect(self.close_tab)
@@ -125,18 +129,12 @@ def generate():
 
     def create_editor(self, file_path):
         editor = QsciScintilla()
-        
-        # Set up editor properties
         editor.setUtf8(True)
         editor.setMarginType(0, QsciScintilla.NumberMargin)
         editor.setMarginWidth(0, "0000")
         editor.setMarginsForegroundColor(Qt.darkGray)
-        
-        # Set font
         font = QFont("Consolas", 10)
         editor.setFont(font)
-        
-        # Set lexer based on file extension
         if file_path.endswith('.py'):
             lexer = QsciLexerPython()
             lexer.setFont(font)
@@ -145,12 +143,8 @@ def generate():
             lexer = QsciLexerCPP()
             lexer.setFont(font)
             editor.setLexer(lexer)
-        
-        # Enable auto-indentation
         editor.setAutoIndent(True)
         editor.setIndentationWidth(4)
-        
-        # Load file content
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 editor.setText(f.read())
@@ -166,27 +160,41 @@ def generate():
         
         base_dir = os.path.dirname(os.path.abspath(__file__))
         root = self.file_model.invisibleRootItem()
-        
-        # Add problems folder
+        gen_utils_path = os.path.join(base_dir, "genUltils.py")
+        if os.path.exists(gen_utils_path):
+            gen_utils_item = QStandardItem("genUltils.py")
+            gen_utils_item.setData(gen_utils_path, Qt.UserRole)
+            functions = self.parse_python_functions(gen_utils_path)
+            for func_name, func_code in functions:
+                func_item = QStandardItem(func_name)
+                func_item.setData({
+                    "file_path": gen_utils_path,
+                    "function_name": func_name,
+                    "function_code": func_code
+                }, Qt.UserRole)
+                font = func_item.font()
+                font.setItalic(True)
+                func_item.setFont(font)
+                gen_utils_item.appendRow(func_item)
+            root.appendRow(gen_utils_item)
         problems_dir = os.path.join(base_dir, "problems")
-        problems_item = QStandardItem("problems")
-        problems_item.setData(problems_dir, Qt.UserRole)
-        self.add_directory_items(problems_item, problems_dir)
-        root.appendRow(problems_item)
-        
-        # Add solutions folder
+        if os.path.exists(problems_dir):
+            problems_item = QStandardItem("problems")
+            problems_item.setData(problems_dir, Qt.UserRole)
+            self.add_directory_items(problems_item, problems_dir)
+            root.appendRow(problems_item)
         solutions_dir = os.path.join(base_dir, "solutions")
-        solutions_item = QStandardItem("solutions")
-        solutions_item.setData(solutions_dir, Qt.UserRole)
-        self.add_directory_items(solutions_item, solutions_dir)
-        root.appendRow(solutions_item)
-        
-        # Add config_samples folder
+        if os.path.exists(solutions_dir):
+            solutions_item = QStandardItem("solutions")
+            solutions_item.setData(solutions_dir, Qt.UserRole)
+            self.add_directory_items(solutions_item, solutions_dir)
+            root.appendRow(solutions_item)
         config_dir = os.path.join(base_dir, "config_sample")
-        config_item = QStandardItem("config_sample")
-        config_item.setData(config_dir, Qt.UserRole)
-        self.add_directory_items(config_item, config_dir)
-        root.appendRow(config_item)
+        if os.path.exists(config_dir):
+            config_item = QStandardItem("config_sample")
+            config_item.setData(config_dir, Qt.UserRole)
+            self.add_directory_items(config_item, config_dir)
+            root.appendRow(config_item)
         
         self.file_tree.expandAll()
 
@@ -206,11 +214,7 @@ def generate():
     def update_template_list(self):
         self.template_combo.clear()
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        
-        # Add the default template first
         self.template_combo.addItem("config_sample.py")
-        
-        # Add templates from config_sample directory
         config_dir = os.path.join(base_dir, "config_sample")
         if os.path.exists(config_dir):
             for file in sorted(os.listdir(config_dir)):
@@ -220,26 +224,44 @@ def generate():
     def file_clicked(self, index):
         item = self.file_model.itemFromIndex(index)
         if item:
-            file_path = item.data(Qt.UserRole)
-            if file_path and os.path.isfile(file_path):
+            data = item.data(Qt.UserRole)
+            if isinstance(data, dict) and "function_code" in data:
+                file_path = data["file_path"]
+                function_name = data["function_name"]
+                function_code = data["function_code"]
+                for i in range(self.tab_widget.count()):
+                    editor = self.tab_widget.widget(i)
+                    if editor.property("file_path") == file_path:
+                        self.tab_widget.setCurrentIndex(i)
+                        editor_text = editor.text()
+                        function_pos = editor_text.find(f"def {function_name}")
+                        if function_pos >= 0:
+                            editor.setCursorPosition(
+                                editor_text.count('\n', 0, function_pos), 0
+                            )
+                        return
                 self.open_file(file_path)
-            elif file_path and os.path.isdir(file_path):
-                # It's a directory, we might want to expand/collapse it
+                current_editor = self.tab_widget.currentWidget()
+                editor_text = current_editor.text()
+                function_pos = editor_text.find(f"def {function_name}")
+                if function_pos >= 0:
+                    line = editor_text.count('\n', 0, function_pos)
+                    current_editor.setCursorPosition(line, 0)
+                    
+            elif isinstance(data, str) and os.path.isfile(data):
+                self.open_file(data)
+            elif isinstance(data, str) and os.path.isdir(data):
                 pass
 
     def open_file(self, file_path):
         if not os.path.exists(file_path):
             QMessageBox.warning(self, "File Not Found", f"Cannot find file: {file_path}")
             return
-            
-        # Check if file is already open
         for i in range(self.tab_widget.count()):
             editor = self.tab_widget.widget(i)
             if editor.property("file_path") == file_path:
                 self.tab_widget.setCurrentIndex(i)
                 return
-        
-        # Create new editor and tab
         editor = self.create_editor(file_path)
         file_name = os.path.basename(file_path)
         index = self.tab_widget.addTab(editor, file_name)
@@ -248,8 +270,6 @@ def generate():
     def close_tab(self, index):
         editor = self.tab_widget.widget(index)
         file_path = editor.property("file_path")
-        
-        # Ask to save changes if modified
         if editor.isModified():
             response = QMessageBox.question(self, "Save Changes?", 
                 f"Save changes to {os.path.basename(file_path)}?",
@@ -287,12 +307,8 @@ def generate():
             base_dir = os.path.dirname(os.path.abspath(__file__))
             problems_dir = os.path.join(base_dir, "problems")
             solutions_dir = os.path.join(base_dir, "solutions")
-            
-            # Ensure directories exist
             os.makedirs(problems_dir, exist_ok=True)
             os.makedirs(solutions_dir, exist_ok=True)
-            
-            # Create problem folder
             problem_dir = os.path.join(problems_dir, problem_name)
             if os.path.exists(problem_dir):
                 response = QMessageBox.question(self, "Problem exists", 
@@ -302,61 +318,43 @@ def generate():
                     return
                     
             os.makedirs(problem_dir, exist_ok=True)
-            
-            # Create config.py file
             config_file = os.path.join(problem_dir, "config.py")
-            
-            # Get template content
-            template_path = os.path.join(base_dir, "config_sample.py")
-            try:
-                with open(template_path, 'r', encoding='utf-8') as src_file:
-                    content = src_file.read()
-                    if "bonghong" in content:
-                        content = content.replace("bonghong", problem_name)
-                    else:
-                        # Update the problem name
-                        content = f'problemName = "{problem_name}"\n' + ''.join(
-                            line for line in content.splitlines(True) 
-                            if not line.strip().startswith('problemName')
-                        )
-            except Exception as e:
-                content = f'''# Config for {problem_name}
-                problemName = "{problem_name}"
-                numSamples = 5
-                numTests = 10
-                timeLimit = 1
-                memoryLimit = 512
+            config_content = f'''# Config for {problem_name}
+problemName = "{problem_name}"  # Ensure this matches EXACTLY
+numSamples = 5
+numTests = 10
+timeLimit = 1
+memoryLimit = 512
 
-                def generate():
-                    # Your test generation logic here
-                    pass
-                '''
-                print(f"Error reading template: {e}")
+def generate():
+    # Your test generation logic here
+    pass
+'''
                 
             with open(config_file, 'w', encoding='utf-8') as dst_file:
-                dst_file.write(content)
+                dst_file.write(config_content)
             
             # Create solution files based on checkboxes
             if self.cpp_checkbox.isChecked():
                 solution_file = os.path.join(solutions_dir, f"{problem_name}.cpp")
                 with open(solution_file, 'w', encoding='utf-8') as f:
                     f.write(f'''// Solution for {problem_name}
-                #include <bits/stdc++.h>
-                using namespace std;
+#include <bits/stdc++.h>
+using namespace std;
 
-                int main() {{
-                    // Your code here
-                    return 0;
-                }}
-                ''')
+int main() {{
+    // Your code here
+    return 0;
+}}
+''')
             
             if self.py_checkbox.isChecked():
                 solution_file = os.path.join(solutions_dir, f"{problem_name}.py")
                 with open(solution_file, 'w', encoding='utf-8') as f:
                     f.write(f'''# Solution for {problem_name}
 
-                    # Your code here
-                    ''')
+# Your code here
+''')
             self.update_file_tree()
             self.open_file(config_file)
             
@@ -513,6 +511,65 @@ def generate():
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Failed to run test generation: {str(e)}")
 
+    def parse_python_functions(self, file_path):
+        """Extract function definitions from a Python file"""
+        functions = []
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+                
+            import ast
+            tree = ast.parse(content)
+            
+            for node in ast.walk(tree):
+                if isinstance(node, ast.FunctionDef):
+                    lines = content.splitlines()
+                    start_line = node.lineno - 1
+                    end_line = 0
+                    
+                    for child in ast.iter_child_nodes(node):
+                        if hasattr(child, 'lineno') and child.lineno > end_line:
+                            end_line = child.lineno
+                    
+                    if end_line < start_line:
+                        end_line = start_line
+                    function_code = '\n'.join(lines[start_line:end_line+1])
+                    functions.append((node.name, function_code))
+        except Exception as e:
+            print(f"Error parsing file {file_path}: {e}")
+        
+        return functions
+
+    def check_python_syntax(self, file_path):
+        """Check Python syntax using pylint"""
+        try:
+            result = subprocess.run(
+                ["pylint", "--errors-only", file_path],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            if result.returncode != 0:
+                return result.stdout 
+            return None  
+        except Exception as e:
+            return f"Error running pylint: {str(e)}"
+
+    def check_cpp_syntax(self, file_path):
+        """Check C++ syntax using g++ or clang-tidy"""
+        try:
+            result = subprocess.run(
+                ["g++", "-fsyntax-only", file_path],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            if result.returncode != 0:
+                return result.stderr
+            return None
+        except Exception as e:
+            return f"Error running g++: {str(e)}"
+
 if __name__ == "__main__":
     try:
         app = QApplication(sys.argv)
@@ -524,4 +581,4 @@ if __name__ == "__main__":
         print(traceback.format_exc())
         if 'app' in locals():
             QMessageBox.critical(None, "Critical Error", 
-                f"Application crashed: {str(e)}\n\nSee console for details.")
+                f"Application crashed: {str(e)}\n\nSee console for details.") 
